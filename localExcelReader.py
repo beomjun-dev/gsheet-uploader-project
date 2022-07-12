@@ -8,11 +8,11 @@ import openpyxl as xl
 def readExcel(localXlsFile):
     READ_START_HEADER_ROW_IDX = None
     READ_START_CONTENTS_ROW_IDX = None
-    READ_START_HEADER = CONSTS.readStartHeader
-    READ_HEADER_LIST = CONSTS.readHeaderList
+    READ_START_HEADER = CONSTS.READ_START_HEADER
+    READ_HEADER_LIST = CONSTS.READ_HEADER_LIST
     # 중복된 열 또는 제외할 열
-    EXCEPT_COL_LIST = CONSTS.exceptColList
-    EXCEPT_WORDS = CONSTS.exceptWords
+    EXCEPT_COL_LIST = CONSTS.EXCEPT_COL_LIST
+    EXCEPT_WORDS = CONSTS.EXCEPT_WORDS
     
     # parsing 결과 dictionary { sheet명 : contents }
     # sheet가 여러개일 때를 고려.

@@ -3,6 +3,7 @@
 import os
 import openpyxl as xl
 import win32com.client as win32
+from const import CONSTS
 
 
 def getCell(sheet: xl.worksheet, targetText):
@@ -103,8 +104,13 @@ def getSheetContents(sheet: xl.worksheet, headerRowIdx: int, contentsRowIdx: int
             # filter(lambda x: x in value[1], exceptContentsWordList)
             if len([word for word in exceptContentsWordList if word in value[1]]) > 0:
                 delItemList.append(key)
-                
+    
+    
+    ec = 'exceptContents - '
+    resultDic[ec] = [CONSTS.STR_EXCEPT_CONTENTS_LIST]
+                    
     for key in delItemList:
+        resultDic[ec + str(key)] = resultDic[key]
         del resultDic[key]
         
     return resultDic
