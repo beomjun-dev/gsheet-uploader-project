@@ -1,5 +1,6 @@
 # Local Excel File Pasing Module
 
+from const import CONSTS
 import utils
 import openpyxl as xl
 
@@ -7,14 +8,11 @@ import openpyxl as xl
 def readExcel(localXlsFile):
     READ_START_HEADER_ROW_IDX = None
     READ_START_CONTENTS_ROW_IDX = None
-    READ_START_HEADER = '이용일'
-    READ_HEADER_LIST = [ READ_START_HEADER, '이용가맹점', '원금', '적립예정' ]
+    READ_START_HEADER = CONSTS.readStartHeader
+    READ_HEADER_LIST = CONSTS.readHeaderList
     # 중복된 열 또는 제외할 열
-    EXCEPT_COL_LIST = ['I']
-    EXCEPT_WORDS = [ 
-                    '버스', '지하철', '동부생명보험', '맞춤서비스수수료', 
-                    '메리츠화재해상보험주식회사', '한화손해보험', '롯데손해보험주식회사', '삼성화재해상보험' 
-                   ]
+    EXCEPT_COL_LIST = CONSTS.exceptColList
+    EXCEPT_WORDS = CONSTS.exceptWords
     
     # parsing 결과 dictionary { sheet명 : contents }
     # sheet가 여러개일 때를 고려.
