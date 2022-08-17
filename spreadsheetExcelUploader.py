@@ -254,10 +254,15 @@ def getHighlightAddressList(worksheet: Worksheet, wordList: list):
     """    
     resultList = []
     
-    for word in wordList:
-        # 패턴매칭을 통해 포함된 cell의 주소를 얻는다.
-        patternedWord = re.compile('.*' + word + '.*')
-        resultList.append(worksheet.find(patternedWord).address)
+    try :
+        for word in wordList:
+            # 패턴매칭을 통해 포함된 cell의 주소를 얻는다.
+            patternedWord = re.compile('.*' + word + '.*')
+            resultList.append(worksheet.find(patternedWord).address)
+    except Exception as e:
+        # FIXED_EXPENSE_WORDS 중, 엑셀에 비연속적으로 나오는 경우 고려.
+        pass
+
     
     return resultList
 
