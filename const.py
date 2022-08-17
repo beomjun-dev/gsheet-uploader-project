@@ -17,7 +17,7 @@ const = namedtuple('const',
 
 CONSTS = const(
                         EXCEL_FILE_FOLDER = 'excel',
-                        JSON_KEY_FILE_NAME = 'my-financial-ledger-64c9734e9900.json',
+                        JSON_KEY_FILE_NAME = 'credential.json',
                         JSON_KEY_FILE_SCOPE = [
                         'https://spreadsheets.google.com/feeds',
                         'https://www.googleapis.com/auth/drive',
