@@ -1,4 +1,5 @@
 excel/*
 !excel/sample.xlsx
 __pycache__/
-my-financial-ledger-64c9734e9900.json
+build/
+credential.json

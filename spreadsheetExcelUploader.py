@@ -266,27 +266,48 @@ def getHighlightAddressList(worksheet: Worksheet, wordList: list):
     
     return resultList
 
+def essentialFileCheck():
+    targetExcelFolder = os.path.join(os.getcwd(), CONSTS.EXCEL_FILE_FOLDER)
+    credentialFile = os.path.join(os.getcwd(), CONSTS.JSON_KEY_FILE_NAME)
+    
+    result = True
+    
+    if not os.path.isdir(targetExcelFolder):
+        os.mkdir(targetExcelFolder)
+        print('[ERROR] "' + targetExcelFolder + '" 에 파싱 대상인 File 이 없습니다.')
+        result = False
+    
+    if not os.path.exists(credentialFile):
+        print('[ERROR] keyfile 인 "' + credentialFile + '" 이 없습니다.')
+        result = False
+    
+    return result
+        
     
 def main():
-    localXlsFile = None
     
-    # 현재 위치로부터 excel 폴더 내 가장 최근 수정한 xls 파일을 찾는다.
-    root = os.listdir(os.getcwd())
-    for file in root:
-        if os.path.isdir(file) and file == CONSTS.EXCEL_FILE_FOLDER:
-            if len(os.listdir(file)) != 0:
+    if essentialFileCheck():
+        
+        localXlsFile = None
+        
+        # 현재 위치로부터 excel 폴더 내 가장 최근 수정한 xls 파일을 찾는다.
+        root = os.listdir(os.getcwd())
+        for file in root:
+            if os.path.isdir(file) and file == CONSTS.EXCEL_FILE_FOLDER:
+                if len(os.listdir(file)) != 0:
+                    localXlsFile = utils.getMostRecentFile(file)
+                    break
+
+        if localXlsFile != None:
+            # 파싱하려는 xls 파일의 확장자가 'xls'인 경우 'xlsx'로 변환한다.
+            if localXlsFile.endswith("xls"):
+                utils.convertXlsToXlsx(localXlsFile)
+                # 가장 최근에 생성된 파일을 기준으로 한다.
                 localXlsFile = utils.getMostRecentFile(file)
-                break
-    
-    # 파싱하려는 xls 파일의 확장자가 'xls'인 경우 'xlsx'로 변환한다.
-    if localXlsFile.endswith("xls"):
-        utils.convertXlsToXlsx(localXlsFile)
-        # 가장 최근에 생성된 파일을 기준으로 한다.
-        localXlsFile = utils.getMostRecentFile(file)
-   
-    spreadsheetDoc = connectSpreadsheet(CONSTS.JSON_KEY_FILE_NAME, CONSTS.SPREADSHEET_URL)
-    uploadLocalXlsToSpreadsheet(spreadsheetDoc, localXlsFile)
-    updateSpreadsheet(spreadsheetDoc)
+        
+            spreadsheetDoc = connectSpreadsheet(CONSTS.JSON_KEY_FILE_NAME, CONSTS.SPREADSHEET_URL)
+            uploadLocalXlsToSpreadsheet(spreadsheetDoc, localXlsFile)
+            updateSpreadsheet(spreadsheetDoc)
 
 
 if __name__ == '__main__':
