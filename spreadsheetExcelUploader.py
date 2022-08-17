@@ -1,6 +1,5 @@
 # Google Spreadsheet Excel Uploader
 
-from unittest import skip
 import gspread
 from gspread import Spreadsheet
 from gspread import Worksheet
