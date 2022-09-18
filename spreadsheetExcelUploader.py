@@ -41,12 +41,16 @@ def uploadLocalXlsToSpreadsheet(spreadsheetDoc: Spreadsheet, localXlsFile):
     except gspread.exceptions.WorksheetNotFound as err:
         worksheet = spreadsheetDoc.add_worksheet(sheetName, 1, 1, 0)
     
+    # 기존 내용을 삭제
+    requests = {"requests": [{"updateCells": {"range": {"sheetId": worksheet._properties['sheetId']}, "fields": "*"}}]}
+    spreadsheetDoc.batch_update(requests)
+    
     # 업로드 전 필요한 수정작업을 수행한다.
     # Key 는 row num, value 는 사용 내역 건
     editedXlsContents = editXlsContents(list(localExcelReader.readExcel(localXlsFile).values()))
     
     # value_input_option=ValueInputOption.raw 시, cell value 앞에 ' 이 붙는다. ex) A1='2020. 5. 5
-    worksheet.insert_rows(editedXlsContents, value_input_option=ValueInputOption.user_entered)
+    worksheet.append_rows(editedXlsContents, value_input_option=ValueInputOption.user_entered)
 
 
 def editXlsContents(xlsContentList: list):
