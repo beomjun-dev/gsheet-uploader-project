@@ -41,6 +41,10 @@ def uploadLocalXlsToSpreadsheet(spreadsheetDoc: Spreadsheet, localXlsFile):
     except gspread.exceptions.WorksheetNotFound as err:
         worksheet = spreadsheetDoc.add_worksheet(sheetName, 1, 1, 0)
     
+    # 이전에 설정된 'MergedCell' 설정을 해지
+    expectedCellAddr, endAddr = getMergedCellAddr(worksheet, CONSTS.STR_EXCEPT_CONTENTS_LIST)
+    worksheet.unmerge_cells(expectedCellAddr + ':' + endAddr)
+    
     # 기존 내용을 삭제
     requests = {"requests": [{"updateCells": {"range": {"sheetId": worksheet._properties['sheetId']}, "fields": "*"}}]}
     spreadsheetDoc.batch_update(requests)
@@ -52,6 +56,16 @@ def uploadLocalXlsToSpreadsheet(spreadsheetDoc: Spreadsheet, localXlsFile):
     # value_input_option=ValueInputOption.raw 시, cell value 앞에 ' 이 붙는다. ex) A1='2020. 5. 5
     worksheet.append_rows(editedXlsContents, value_input_option=ValueInputOption.user_entered)
 
+def getMergedCellAddr(worksheet: Worksheet, mergeCellWord: str):
+    # 'mergeCellWord' 셀 시작 주소
+    expectedCellAddr = getHighlightAddress(worksheet, mergeCellWord)
+    if expectedCellAddr:
+        # 'mergeCellWord' 셀 끝 주소
+        endAddr = chr(ord(expectedCellAddr[0:1]) + 4) + expectedCellAddr[1:]
+        
+        return expectedCellAddr, endAddr
+    
+    return '', ''
 
 def editXlsContents(xlsContentList: list):
     """
@@ -227,7 +241,7 @@ def updateSpreadsheet(spreadsheetDoc: Spreadsheet):
     }})
     
     # '제외된 내역 리스트' 셀 색상 설정 및 가운데 정렬
-    expectedCellAddr = getHighlightAddress(worksheet, CONSTS.STR_EXCEPT_CONTENTS_LIST)
+    expectedCellAddr, endAddr = getMergedCellAddr(worksheet, CONSTS.STR_EXCEPT_CONTENTS_LIST)
     worksheet.format(expectedCellAddr, {
     "backgroundColor": {
       # https://www.tug.org/pracjourn/2007-4/walden/color.pdf
@@ -239,7 +253,6 @@ def updateSpreadsheet(spreadsheetDoc: Spreadsheet):
     })
     
     # '제외된 내역 리스트' ROW 병합
-    endAddr = chr(ord(expectedCellAddr[0:1]) + 4) + expectedCellAddr[1:]
     worksheet.merge_cells(expectedCellAddr + ':' + endAddr)
 
 
@@ -249,7 +262,7 @@ def getHighlightAddress(worksheet: Worksheet, word: str):
     """
     
     patternedWord = re.compile('.*' + word + '.*')
-    return worksheet.find(patternedWord).address
+    return worksheet.find(patternedWord).address if worksheet.find(patternedWord) else ''
 
 
 def getHighlightAddressList(worksheet: Worksheet, wordList: list):
