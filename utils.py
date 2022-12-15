@@ -102,7 +102,7 @@ def getSheetContents(sheet: xl.worksheet, headerRowIdx: int, contentsRowIdx: int
         
         for key, value in item:
             # filter(lambda x: x in value[1], exceptContentsWordList)
-            if len([word for word in exceptContentsWordList if word in value[1]]) > 0:
+            if len(value) > 2 and len([word for word in exceptContentsWordList if word in value[1]]) > 0:
                 delItemList.append(key)
     
     
