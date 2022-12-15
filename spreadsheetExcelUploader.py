@@ -162,7 +162,10 @@ def calculateSubColumn(xlsContentList: list, xColIdx: int, yColIdx: int, destCol
         maxLen = len(content)
         if maxLen > xColIdx and maxLen > yColIdx and maxLen > destColIdx:
             # re module은 정규표현식을 지원한다. 
-            content[destColIdx] = int(content[xColIdx]) - int(content[yColIdx])
+            try:
+                content[destColIdx] = int(content[xColIdx]) - int(content[yColIdx])
+            except:
+                print('Exception', 'skip', content)
 
 
 def removeColumn(xlsContentList: list, colIdx: int):
